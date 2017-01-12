@@ -2,5 +2,5 @@ app:
     resource: "@AppBundle/Controller/"
     type:     annotation
 
-login_check:
+login:
     path: /login

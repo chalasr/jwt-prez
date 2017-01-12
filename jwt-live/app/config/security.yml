@@ -1,21 +1,20 @@
-- composer create-project symfony/framework-standard-edition jwt-demo
-- composer require lexik/jwt-authentication-bundle
-- AppKernel -> register LexikJWTAuthenticationBundle
-- AppBundle\Entity\User -> Creer l'entité user implémente UserInterface
-- Add lexik_jwt_authentic
-- Security:
+# To get started with security, check out the documentation:
+# http://symfony.com/doc/current/security.html
 security:
+
+    encoders:
+        Symfony\Component\Security\Core\User\User:
+            algorithm: plaintext
+
+    # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         in_memory:
             memory:
                 users:
                     - { name: john, password: doe, roles: [ROLE_USER] }
 
-    encoders:
-        Symfony\Component\Security\Core\User\User:
-            algorithm: plaintext
-
     firewalls:
+        # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -38,13 +37,5 @@ security:
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
     access_control:
-        - { path: ^/hello, roles: IS_AUTHENTICATED_FULLY }
         - { path: ^/, roles: [IS_AUTHENTICATED_ANONYMOUSLY, IS_AUTHENTICATED_FULLY] }
-
-- Controllers:
-    - DefaultController::resourceAction
-    - SecurityController::registerAction
-- Routes:
-    - /login
-    - /register
-    - /resource
+        - { path: ^/hello, roles: IS_AUTHENTICATED_FULLY }

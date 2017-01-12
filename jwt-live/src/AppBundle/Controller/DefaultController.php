@@ -26,6 +26,6 @@ class DefaultController extends Controller
      */
     public function helloAction(UserInterface $user)
     {
-        return new Response('Hello '.$user->getUsername());
+        return new Response(sprintf('Hello %s!', $user->getUsername()));
     }
 }
