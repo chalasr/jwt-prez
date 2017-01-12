@@ -1,0 +1,50 @@
+- composer create-project symfony/framework-standard-edition jwt-demo
+- composer require lexik/jwt-authentication-bundle
+- AppKernel -> register LexikJWTAuthenticationBundle
+- AppBundle\Entity\User -> Creer l'entité user implémente UserInterface
+- Add lexik_jwt_authentic
+- Security:
+security:
+    providers:
+        in_memory:
+            memory:
+                users:
+                    - { name: john, password: doe, roles: [ROLE_USER] }
+
+    encoders:
+        Symfony\Component\Security\Core\User\User:
+            algorithm: plaintext
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        secured:
+            pattern: ^/hello
+            stateless: true
+            guard:
+                authenticators:
+                    - lexik_jwt_authentication.jwt_token_authenticator
+
+        main:
+            pattern: ^/
+            anonymous: ~
+            stateless: true
+            form_login:
+                check_path: /login
+                require_previous_session: false
+                success_handler: lexik_jwt_authentication.handler.authentication_success
+                failure_handler: lexik_jwt_authentication.handler.authentication_failure
+
+    access_control:
+        - { path: ^/hello, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/, roles: [IS_AUTHENTICATED_ANONYMOUSLY, IS_AUTHENTICATED_FULLY] }
+
+- Controllers:
+    - DefaultController::resourceAction
+    - SecurityController::registerAction
+- Routes:
+    - /login
+    - /register
+    - /resource
